@@ -4,11 +4,21 @@
 #include <lcarte.h>
 #include <voyant.h>
 #include "baseclient.h"
+#include "mode.h"
+#include <string.h>
 #include <donnees_borne.h>
 
 void lecteurcarte_initialiser()
 {
     initialisations_ports();
+}
+
+/* Attend l'insertion et retourne le numero lu (ou <= 0 en erreur) */
+int lecteurcarte_obtenir_numero(void)
+{
+    attente_insertion_carte();
+    int numero = lecture_numero_carte();
+    return numero;
 }
 
 void lecteurcarte_lire_carte()
@@ -23,30 +33,33 @@ void lecteurcarte_lire_carte()
         voyant_setdisponible(VERT);
         int auth = baseclient_authentifier(numero);
         printf("Authentification %s\n", auth ? "réussie" : "échouée");
-        if(auth)
-        {   for(int i=0; i<8; i++)
-            voyant_setcharge(ON);
-            printf("Accès autorisé. Chargement en cours...\n");
-            // Simuler le chargement
-            sleep(1); // Remplacez par la durée réelle de chargement
-            voyant_setcharge(OFF);
-            //printf("Chargement terminé. Vous pouvez retirer votre carte.\n");
-            voyant_setdisponible(OFF);
-        }
-        else
-        {
-            voyant_setdisponible(ROUGE);
-            printf("Accès refusé. Veuillez contacter le support.\n");
+
+        if (auth) {
+            if (current_mode == 2) {
+                for(int i=0; i<8; i++)
+                    voyant_setcharge(ON);
+                printf("Accès autorisé. Chargement en cours...\n");
+                sleep(1); /* simuler */
+                voyant_setcharge(OFF);
+                voyant_setdisponible(OFF);
+            } else {
+                printf("Mode gestion base client actif. Carte reconnue.\n");
+            }
+        } else {
+            if (current_mode == 1) {
+                /* En mode gestion : appeler la fonction interactive d'enregistrement */
+                baseclient_interactive_enregistrer(numero);
+            } else {
+                voyant_setdisponible(ROUGE);
+                printf("Accès refusé. Veuillez contacter le support.\n");
+            }
         }
     }
     else
     {
         voyant_setdisponible(ROUGE);
         printf("Erreur de lecture de carte.\n");
-
-
     }
 
-   
 }
 

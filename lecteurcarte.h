@@ -5,5 +5,6 @@
 void lecteurcarte_initialiser();
 void lecteurcarte_lire_carte();
 void attente_insertion_carte();
+int lecteurcarte_obtenir_numero(void);
 
 #endif // LECTEURCARTE_H
