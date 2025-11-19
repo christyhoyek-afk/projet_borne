@@ -3,7 +3,8 @@
 #include <donnees_borne.h>
 
 #include "lecteurcarte.h"
-
+#include"voyant.h"
+#include "Generateur_save.h"
 int main()
 {
 
@@ -11,7 +12,7 @@ int main()
 
     while (1)
     {
-        lecteurcarte_lire_carte();
+        lecteurcarte_lire_carte(VERT);
         lecture_numero_carte();
     }
 
