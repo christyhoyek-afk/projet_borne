@@ -61,7 +61,7 @@ int baseclient_interactive_enregistrer(int numcarte)
 	char nom[128] = {0};
 	char prenom[128] = {0};
 
-	printf("Carte non reconnue. Entrez le nom : ");
+	printf("Carte non identifiée. Entrez le nom : ");
 	if (fgets(nom, sizeof(nom), stdin) == NULL) return 0;
 	size_t l = strlen(nom);
 	if (l && nom[l-1] == '\n') nom[l-1] = '\0';
