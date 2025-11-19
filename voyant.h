@@ -1,8 +1,9 @@
 #ifndef VOYANT_H
 #define VOYANT_H
-#include "types.h"
+/* Use the shared donnees_borne.h which defines 'led' and related types */
+#include <donnees_borne.h>
 
-void voyant_initialisation();
+int voyant_initialisation();
 void voyant_setcharge(led led_charge);
 void voyant_setdisponible(led led_dispo);
 void voyant_setdefaut(led led_defaut);

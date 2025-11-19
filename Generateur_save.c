@@ -5,7 +5,7 @@
 #include <unistd.h> /*pour utiliser usleep*/
 #include "voyant.h"
 #include "Generateur_save.h"
-#include "Prise.h"
+#include "prise.h"
 
 entrees * iog = NULL;
 int shmidg ;

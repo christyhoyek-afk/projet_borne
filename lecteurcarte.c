@@ -8,9 +8,14 @@
 #include <string.h>
 #include <donnees_borne.h>
 
+/* module-level flag indicating whether voyants were initialized */
+static int voyants_ok = 0;
+
 void lecteurcarte_initialiser()
 {
     initialisations_ports();
+    /* initialise voyants and record status so other functions can test it */
+    voyants_ok = voyant_initialisation();
 }
 
 /* Attend l'insertion et retourne le numero lu (ou <= 0 en erreur) */
@@ -28,19 +33,22 @@ void lecteurcarte_lire_carte()
     int numero = lecture_numero_carte();
     printf("Votre numéro de carte : %d\n", numero);
 
-    if(carte_inseree && voyant_initialisation)
+    /* consider the card valid if lecture_numero_carte returned > 0
+       and the voyants subsystem was successfully initialised */
+    if (numero >= 0 && voyants_ok)
     {
+        /* mark available and proceed */
         voyant_setdisponible(VERT);
         int auth = baseclient_authentifier(numero);
         printf("Authentification %s\n", auth ? "réussie" : "échouée");
-
+        // printf("%d", auth);
         if (auth) {
             if (current_mode == 2) {
-                for(int i=0; i<8; i++)
-                    voyant_setcharge(ON);
+                for(int i=0; i<8; i++){
+                    voyant_setcharge(VERT);
                 printf("Accès autorisé. Chargement en cours...\n");
                 sleep(1); /* simuler */
-                voyant_setcharge(OFF);
+                voyant_setcharge(OFF);}
                 voyant_setdisponible(OFF);
             } else {
                 printf("Mode gestion base client actif. Carte reconnue.\n");

@@ -3,7 +3,7 @@
 #include <memoire_borne.h>
 #include <donnees_borne.h>
 #include "voyant.h"
-#include "Prise.h"
+#include "prise.h"
 
 entrees * iop = NULL; 
 int shmidp;
