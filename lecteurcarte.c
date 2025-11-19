@@ -32,13 +32,14 @@ void lecteurcarte_lire_carte()
     printf("Carte insérée ?.\n");
     int numero = lecture_numero_carte();
     printf("Votre numéro de carte : %d\n", numero);
+    voyant_setdisponible(VERT);
 
     /* consider the card valid if lecture_numero_carte returned > 0
        and the voyants subsystem was successfully initialised */
     if (numero >= 0 && voyants_ok)
     {
         /* mark available and proceed */
-        voyant_setdisponible(VERT);
+       
         int auth = baseclient_authentifier(numero);
         printf("Authentification %s\n", auth ? "réussie" : "échouée");
         // printf("%d", auth);
@@ -46,9 +47,13 @@ void lecteurcarte_lire_carte()
             if (current_mode == 2) {
                 for(int i=0; i<8; i++){
                     voyant_setcharge(VERT);
-                printf("Accès autorisé. Chargement en cours...\n");
-                sleep(1); /* simuler */
-                voyant_setcharge(OFF);}
+                    sleep(5); /* simuler */
+                    printf("Accès autorisé. Chargement en cours...\n");
+                    voyant_setcharge(OFF);
+                    sleep(5); /* simuler */
+                      
+                }
+                
                 voyant_setdisponible(OFF);
             } else {
                 printf("Mode gestion base client actif. Carte reconnue.\n");
