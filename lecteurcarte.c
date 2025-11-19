@@ -23,6 +23,21 @@ void lecteurcarte_lire_carte()
         voyant_setdisponible(VERT);
         int auth = baseclient_authentifier(numero);
         printf("Authentification %s\n", auth ? "réussie" : "échouée");
+        if(auth)
+        {   for(int i=0; i<8; i++)
+            voyant_setcharge(ON);
+            printf("Accès autorisé. Chargement en cours...\n");
+            // Simuler le chargement
+            sleep(1); // Remplacez par la durée réelle de chargement
+            voyant_setcharge(OFF);
+            //printf("Chargement terminé. Vous pouvez retirer votre carte.\n");
+            voyant_setdisponible(OFF);
+        }
+        else
+        {
+            voyant_setdisponible(ROUGE);
+            printf("Accès refusé. Veuillez contacter le support.\n");
+        }
     }
     else
     {
