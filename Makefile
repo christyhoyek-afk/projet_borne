@@ -22,7 +22,7 @@ LIBDIRS = -L /shared/TCii/lib
 #dependance librairie libsmartcard_borne (voir git)
 LIBS64 = -lsmartcard_borne_x64 -lpcsclite
 
-SRCS = lecteurcarte.c borne.c
+SRCS = lecteurcarte.c borne.c baseclient.c
 
 OBJS = ${SRCS:.c=.o} 
 

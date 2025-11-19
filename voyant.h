@@ -1,5 +1,7 @@
 #ifndef VOYANT_H
 #define VOYANT_H
+#include "types.h"
+
 void voyant_initialisation();
 void voyant_setcharge(led led_charge);
 void voyant_setdisponible(led led_dispo);

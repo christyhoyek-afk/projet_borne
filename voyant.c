@@ -16,7 +16,7 @@ void voyant_initialisation()
 	/*printf("acces avec succes\n");*/
 	/*eteindre toutes les LED*/
 	voyant_setcharge(OFF);
-	voyant_setdisponible(OFF);
+	voyant_setdisponible(ON);
 	voyant_setdefaut(OFF);
 	voyant_setpriseR(OFF);
 	}

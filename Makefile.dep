@@ -1,6 +1,6 @@
 lecteurcarte.o: lecteurcarte.c lecteurcarte.h \
- /shared/TCii/include/lcarte.h
+ /shared/TCii/include/lcarte.h voyant.h
 borne.o: borne.c /shared/TCii/include/memoire_borne.h \
  /shared/TCii/include/donnees_borne.h \
  /shared/TCii/include/donnees_borne.h lecteurcarte.h \
- /shared/TCii/include/lcarte.h
+ /shared/TCii/include/lcarte.h voyant.h Generateur_save.h
