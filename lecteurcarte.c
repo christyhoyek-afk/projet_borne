@@ -90,11 +90,8 @@ void lecteurcarte_lire_carte()
 			
 			/* Le générateur gère la charge complète */
 			Generateur_save_chargement_VH();
-			
-			/* Récupération de la voiture */
-			Gnenerateur_save_recuperation_VH();
 
-			/* Authentification à la reprise après fin de charge / arrêt */
+			/* Authentification à la reprise après fin de charge / arrêt (trappe bloquée tant que non auth) */
 			int auth_ok = 0;
 			while (!auth_ok) {
 				printf("Charge terminée ou arrêtée. Insérez votre carte pour récupérer le véhicule...\n");
@@ -110,6 +107,11 @@ void lecteurcarte_lire_carte()
 					voyant_setdisponible(ROUGE);
 				}
 			}
+
+			/* Une fois ré-authentifié, on autorise la reprise (déverrouillage prise géré par le générateur) */
+			Gnenerateur_save_recuperation_VH();
+
+			printf("Veuillez retirer votre carte.\n");
 			lecteurcarte_attendre_retrait();
 			
 		} else {
