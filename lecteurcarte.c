@@ -30,11 +30,8 @@ int lecteurcarte_obtenir_numero(void)
 
 void lecteurcarte_attendre_retrait(void)
 {
-    /* Attend le retrait de la carte (simulation : appuyer sur Entrée) */
-    printf("Appuyez sur Entrée pour confirmer le retrait de la carte : ");
-    fflush(stdout);
-    char dummy[32];
-    fgets(dummy, sizeof(dummy), stdin);
+    printf("Veuillez retirer votre carte.\n");
+    attente_retrait_carte();
     printf("Carte retirée.\n");
 }
 
@@ -57,7 +54,7 @@ void lecteurcarte_lire_carte()
                 for(int i=0; i<8; i++)
                 voyant_setcharge(VERT);
                 printf("Accès autorisé. Chargement en cours...\n");
-                sleep(1); /* simuler */
+                sleep(100); /* simuler */
                 voyant_setcharge(OFF);
                 voyant_setdisponible(OFF);
                 printf("Veuillez retirer votre carte.\n");
