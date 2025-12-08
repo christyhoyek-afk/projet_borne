@@ -33,3 +33,7 @@ void Prise_veroiller_trape(void)
 	iop->led_trappe = OFF;/*trape verouillee*/
 
 }
+void prise_led_trappe(led led_trappe)
+{
+	iop->led_prise = VERT;
+}
