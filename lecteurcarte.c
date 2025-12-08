@@ -83,6 +83,7 @@ void lecteurcarte_lire_carte()
 				printf("État du bouton CHARGE : %d\n", etat);
 				if (etat) {
 					bouton_enfonce = 1;
+                    voyant_setdisponible(OFF);
 					break;
 				}
 				if (time(NULL) - t0 >= 60) {
