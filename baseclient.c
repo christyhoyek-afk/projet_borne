@@ -58,6 +58,12 @@ int baseclient_enregistrer(int numcarte, const char *nom, const char *prenom)
    Retourne 1 si enregistrement effectué, 0 sinon. */
 int baseclient_interactive_enregistrer(int numcarte)
 {
+	/* Vérifier si la carte existe déjà */
+	if (baseclient_authentifier(numcarte)) {
+		printf("Client existe déjà dans la base. Veuillez retirer votre carte.\n");
+		return 0;
+	}
+
 	char nom[128] = {0};
 	char prenom[128] = {0};
 
