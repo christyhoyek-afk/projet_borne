@@ -24,6 +24,8 @@ int lecteurcarte_obtenir_numero(void)
     attente_insertion_carte();
     int numero = lecture_numero_carte();
     return numero;
+	printf("Carte retirée");
+
 }
 
 void lecteurcarte_attendre_retrait(void)
@@ -53,7 +55,7 @@ void lecteurcarte_lire_carte()
         if (auth) {
             if (current_mode == 2) {
                 for(int i=0; i<8; i++)
-                    voyant_setcharge(ON);
+                voyant_setcharge(VERT);
                 printf("Accès autorisé. Chargement en cours...\n");
                 sleep(1); /* simuler */
                 voyant_setcharge(OFF);

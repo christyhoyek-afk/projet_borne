@@ -8,9 +8,7 @@ static void baseclient_demander_retrait(void)
 {
 	printf("Veuillez retirer votre carte.\n");
 	printf("Appuyez sur Entrée pour confirmer le retrait de la carte : ");
-	fflush(stdout);
-	char dummy[32];
-	fgets(dummy, sizeof(dummy), stdin);
+	attente_retrait_carte();
 	printf("Carte retirée.\n");
 }
 
@@ -71,6 +69,7 @@ int baseclient_interactive_enregistrer(int numcarte)
 	/* Vérifier si la carte existe déjà */
 	if (baseclient_authentifier(numcarte)) {
 		printf("Client existe déjà dans la base. Veuillez retirer votre carte.\n");
+		baseclient_demander_retrait();
 		return 0;
 	}
 
