@@ -62,8 +62,17 @@ void lecteurcarte_lire_carte()
 
 	if (auth) {
 		if (current_mode == 2) {
-			/* Mode charge : attendre le bouton CHARGE physique */
-			printf("Carte reconnue. En attente du bouton CHARGE...\n");
+			/* Mode charge : clignoter voyant charge, demander retrait carte, attendre bouton */
+			printf("Carte reconnue. Clignotement du voyant de charge...\n");
+			voyant_toggle_charge(); /* Fait clignoter le voyant charge (8 fois) */
+			
+			/* Demander à l'utilisateur de retirer sa carte */
+			printf("Veuillez retirer votre carte avant d'appuyer sur le bouton CHARGE.\n");
+			lecteurcarte_attendre_retrait();
+			
+			/* Éteindre voyant disponible et attendre le bouton CHARGE */
+			voyant_setdisponible(OFF);
+			printf("En attente du bouton CHARGE...\n");
 			
 			/* Boucle d'attente : lire l'état du bouton CHARGE */
 			int bouton_enfonce = 0;
@@ -85,8 +94,6 @@ void lecteurcarte_lire_carte()
 			/* Récupération de la voiture */
 			Gnenerateur_save_recuperation_VH();
 			
-			printf("Veuillez retirer votre carte.\n");
-			lecteurcarte_attendre_retrait();
 		} else {
 			/* Mode gestion : carte reconnue dans la base */
 			printf("Mode gestion base client actif. Carte reconnue.\n");
