@@ -110,7 +110,6 @@ void lecteurcarte_lire_carte()
 					voyant_setdisponible(ROUGE);
 				}
 			}
-			printf("Veuillez retirer votre carte.\n");
 			lecteurcarte_attendre_retrait();
 			
 		} else {
