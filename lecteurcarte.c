@@ -54,7 +54,7 @@ void lecteurcarte_lire_carte()
                 for(int i=0; i<8; i++)
                 voyant_setcharge(VERT);
                 printf("Accès autorisé. Chargement en cours...\n");
-                sleep(100); /* simuler */
+                sleep(5); /* simuler */
                 voyant_setcharge(OFF);
                 voyant_setdisponible(OFF);
                 printf("Veuillez retirer votre carte.\n");
