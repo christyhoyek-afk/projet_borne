@@ -41,15 +41,12 @@ void lecteurcarte_lire_carte()
     printf("Votre numéro de carte : %d\n", numero);
     voyant_setdisponible(VERT);
 
-    /* consider the card valid if lecture_numero_carte returned > 0
-       and the voyants subsystem was successfully initialised */
+    /* carte valide si numéro lu et voyants init OK */
     if (numero >= 0 && voyants_ok)
     {
-        /* mark available and proceed */
-       
         int auth = baseclient_authentifier(numero);
         printf("Authentification %s\n", auth ? "réussie" : "échouée");
-        // printf("%d", auth);
+
         if (auth) {
             if (current_mode == 2) {
                 for(int i=0; i<8; i++)
@@ -59,20 +56,23 @@ void lecteurcarte_lire_carte()
                 voyant_setcharge(OFF);
                 voyant_setdisponible(OFF);
                 printf("Veuillez retirer votre carte.\n");
-                      
-                }
-                
-                voyant_setdisponible(OFF);
+                lecteurcarte_attendre_retrait();
             } else {
                 printf("Mode gestion base client actif. Carte reconnue.\n");
+                printf("Veuillez retirer votre carte.\n");
+                lecteurcarte_attendre_retrait();
             }
         } else {
             if (current_mode == 1) {
                 /* En mode gestion : appeler la fonction interactive d'enregistrement */
                 baseclient_interactive_enregistrer(numero);
+                printf("Veuillez retirer votre carte.\n");
+                lecteurcarte_attendre_retrait();
             } else {
                 voyant_setdisponible(ROUGE);
                 printf("Accès refusé. Veuillez contacter le support.\n");
+                printf("Veuillez retirer votre carte.\n");
+                lecteurcarte_attendre_retrait();
             }
         }
     }
@@ -80,6 +80,8 @@ void lecteurcarte_lire_carte()
     {
         voyant_setdisponible(ROUGE);
         printf("Erreur de lecture de carte.\n");
+        printf("Veuillez retirer votre carte.\n");
+        lecteurcarte_attendre_retrait();
     }
 
 }
