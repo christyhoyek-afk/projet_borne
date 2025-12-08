@@ -6,6 +6,7 @@
 #include "baseclient.h"
 #include "mode.h"
 #include <string.h>
+#include <time.h>
 #include <donnees_borne.h>
 #include "Generateur_save.h"
 #include "bouton.h"
@@ -35,7 +36,7 @@ int lecteurcarte_obtenir_numero(void)
 
 void lecteurcarte_attendre_retrait(void)
 {
-	printf("Veuillez retirer votre carte...\n");
+	printf("Veuillez retirer votre carte.\n");
     /* Attend le retrait de la carte (simulation : appuyer sur Entrée) */
 	attente_retrait_carte();
 	printf("Carte retirée.\n");
@@ -76,14 +77,21 @@ void lecteurcarte_lire_carte()
 			
 			/* Boucle d'attente : lire l'état du bouton CHARGE */
 			int bouton_enfonce = 0;
+			time_t t0 = time(NULL);
 			while (!bouton_enfonce) {
 				int etat = lireBoutonCharge(&bouton_charge);
 				printf("État du bouton CHARGE : %d\n", etat);
 				if (etat) {
 					bouton_enfonce = 1;
-				} else {
-					usleep(100000); /* Vérifier tous les 100ms */
+					break;
 				}
+				if (time(NULL) - t0 >= 60) {
+					printf("Erreur : délai d'une minute dépassé, retour au mode initial.\n");
+					voyant_setdisponible(VERT);
+					voyant_setcharge(OFF);
+					return;
+				}
+				usleep(100000); /* Vérifier tous les 100ms */
 			}
 			
 			printf("Bouton CHARGE enfoncé. Démarrage de la charge...\n");
@@ -110,14 +118,12 @@ void lecteurcarte_lire_carte()
 
 			/* Une fois ré-authentifié, on autorise la reprise (déverrouillage prise géré par le générateur) */
 			Gnenerateur_save_recuperation_VH();
-
-			printf("Veuillez retirer votre carte.\n");
+            printf("Véhicule récupéré. Merci et à bientôt !\n");
 			lecteurcarte_attendre_retrait();
 			
 		} else {
 			/* Mode gestion : carte reconnue dans la base */
 			printf("Mode gestion base client actif. Carte reconnue.\n");
-			printf("Veuillez retirer votre carte.\n");
 			lecteurcarte_attendre_retrait();
 		}
 	} else {
@@ -126,9 +132,8 @@ void lecteurcarte_lire_carte()
 			baseclient_interactive_enregistrer(numero);
 		} else {
 			/* Mode charge : refuser l'accès */
-			voyant_setdisponible(ROUGE);
+			voyant_toggle_Defaut();
 			printf("Accès refusé. Veuillez contacter le support.\n");
-			printf("Veuillez retirer votre carte.\n");
 			lecteurcarte_attendre_retrait();
 		}
 	}
