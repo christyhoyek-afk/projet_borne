@@ -26,6 +26,13 @@ int lecteurcarte_obtenir_numero(void)
     return numero;
 }
 
+void lecteurcarte_attendre_retrait(void)
+{
+    /* Bloque jusqu'au retrait physique de la carte (fonction fournie par le lecteur) */
+    attente_retrait_carte();
+    printf("Carte retirée.\n");
+}
+
 void lecteurcarte_lire_carte()
 {
     attente_insertion_carte();

@@ -30,6 +30,9 @@ int main()
             /* Mode charge : procéder à la lecture et recharge si la carte existe */
             printf("Mode charge sélectionné. Insérez la carte...\n");
             lecteurcarte_lire_carte();
+            /* Attendre le retrait avant de réafficher le menu */
+            printf("Veuillez retirer votre carte pour continuer...\n");
+            lecteurcarte_attendre_retrait();
         } else {
             /* Mode gestion base client : afficher sous-menu */
             int gestion_active = 1;
@@ -56,6 +59,10 @@ int main()
                     /* Modifier */
                     baseclient_interactive_modifier(num);
                 }
+
+                /* Après chaque opération de gestion, demander le retrait */
+                printf("Veuillez retirer votre carte pour continuer...\n");
+                lecteurcarte_attendre_retrait();
             }
         }
     }
