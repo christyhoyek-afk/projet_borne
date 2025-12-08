@@ -3,10 +3,12 @@
 #include<string.h>
 #include<ctype.h>
 #include"baseclient.h"
+#include"lecteurcarte.h"
 
 static void baseclient_demander_retrait(void)
 {
 	printf("Veuillez retirer votre carte.\n");
+	lecteurcarte_attendre_retrait();
 }
 
 /* Recherche si une carte existe dans la base.
