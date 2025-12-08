@@ -93,6 +93,25 @@ void lecteurcarte_lire_carte()
 			
 			/* Récupération de la voiture */
 			Gnenerateur_save_recuperation_VH();
+
+			/* Authentification à la reprise après fin de charge / arrêt */
+			int auth_ok = 0;
+			while (!auth_ok) {
+				printf("Charge terminée ou arrêtée. Insérez votre carte pour récupérer le véhicule...\n");
+				attente_insertion_carte();
+				int num_recup = lecture_numero_carte();
+				printf("Numéro carte (reprise) : %d\n", num_recup);
+				if (num_recup > 0 && baseclient_authentifier(num_recup)) {
+					auth_ok = 1;
+					printf("Carte reconnue. Vous pouvez récupérer le véhicule.\n");
+					voyant_setdisponible(VERT);
+				} else {
+					printf("Carte non reconnue. Veuillez réessayer.\n");
+					voyant_setdisponible(ROUGE);
+				}
+			}
+			printf("Veuillez retirer votre carte.\n");
+			lecteurcarte_attendre_retrait();
 			
 		} else {
 			/* Mode gestion : carte reconnue dans la base */
