@@ -7,84 +7,103 @@
 #include "mode.h"
 #include <string.h>
 #include <donnees_borne.h>
+#include "Generateur_save.h"
+#include "bouton.h"
 
 /* module-level flag indicating whether voyants were initialized */
 static int voyants_ok = 0;
+/* Instance globale du bouton */
+static Bouton bouton_charge;
 
 void lecteurcarte_initialiser()
 {
-    initialisations_ports();
-    /* initialise voyants and record status so other functions can test it */
-    voyants_ok = voyant_initialisation();
+	initialisations_ports();
+	/* initialise voyants and record status so other functions can test it */
+	voyants_ok = voyant_initialisation();
+	/* Initialiser le bouton CHARGE */
+	Bouton_init(&bouton_charge);
+	boutonsInitialise(&bouton_charge);
 }
 
 /* Attend l'insertion et retourne le numero lu (ou <= 0 en erreur) */
 int lecteurcarte_obtenir_numero(void)
 {
-    attente_insertion_carte();
-    int numero = lecture_numero_carte();
-    return numero;
-	printf("Carte retirée");
-
+	attente_insertion_carte();
+	int numero = lecture_numero_carte();
+	return numero;
 }
 
 void lecteurcarte_attendre_retrait(void)
 {
-    printf("Veuillez retirer votre carte.\n");
-    attente_retrait_carte();
-    printf("Carte retirée.\n");
+	printf("Veuillez retirer votre carte...\n");
+    /* Attend le retrait de la carte (simulation : appuyer sur Entrée) */
+	attente_retrait_carte();
+	printf("Carte retirée.\n");
 }
 
 void lecteurcarte_lire_carte()
 {
-    attente_insertion_carte();
-    printf("Carte insérée ?.\n");
-    int numero = lecture_numero_carte();
-    printf("Votre numéro de carte : %d\n", numero);
-    voyant_setdisponible(VERT);
+	attente_insertion_carte();
+	printf("Carte insérée.\n");
+	int numero = lecture_numero_carte();
+	printf("Votre numéro de carte : %d\n", numero);
 
-    /* carte valide si numéro lu et voyants init OK */
-    if (numero >= 0 && voyants_ok)
-    {
-        int auth = baseclient_authentifier(numero);
-        printf("Authentification %s\n", auth ? "réussie" : "échouée");
+	if (numero <= 0) {
+		voyant_setdisponible(ROUGE);
+		printf("Erreur de lecture de carte.\n");
+		printf("Veuillez retirer votre carte.\n");
+		lecteurcarte_attendre_retrait();
+		return;
+	}
 
-        if (auth) {
-            if (current_mode == 2) {
-                for(int i=0; i<8; i++)
-                voyant_setcharge(VERT);
-                printf("Accès autorisé. Chargement en cours...\n");
-                sleep(5); /* simuler */
-                voyant_setcharge(OFF);
-                voyant_setdisponible(OFF);
-                printf("Veuillez retirer votre carte.\n");
-                lecteurcarte_attendre_retrait();
-            } else {
-                printf("Mode gestion base client actif. Carte reconnue.\n");
-                printf("Veuillez retirer votre carte.\n");
-                lecteurcarte_attendre_retrait();
-            }
-        } else {
-            if (current_mode == 1) {
-                /* En mode gestion : appeler la fonction interactive d'enregistrement */
-                baseclient_interactive_enregistrer(numero);
-                printf("Veuillez retirer votre carte.\n");
-                lecteurcarte_attendre_retrait();
-            } else {
-                voyant_setdisponible(ROUGE);
-                printf("Accès refusé. Veuillez contacter le support.\n");
-                printf("Veuillez retirer votre carte.\n");
-                lecteurcarte_attendre_retrait();
-            }
-        }
-    }
-    else
-    {
-        voyant_setdisponible(ROUGE);
-        printf("Erreur de lecture de carte.\n");
-        printf("Veuillez retirer votre carte.\n");
-        lecteurcarte_attendre_retrait();
-    }
+	voyant_setdisponible(VERT);
+	int auth = baseclient_authentifier(numero);
+	printf("Authentification %s\n", auth ? "réussie" : "échouée");
 
+	if (auth) {
+		if (current_mode == 2) {
+			/* Mode charge : attendre le bouton CHARGE physique */
+			printf("Carte reconnue. En attente du bouton CHARGE...\n");
+			
+			/* Boucle d'attente : lire l'état du bouton CHARGE */
+			int bouton_enfonce = 0;
+			while (!bouton_enfonce) {
+				int etat = lireBoutonCharge(&bouton_charge);
+				printf("État du bouton CHARGE : %d\n", etat);
+				if (etat) {
+					bouton_enfonce = 1;
+				} else {
+					usleep(100000); /* Vérifier tous les 100ms */
+				}
+			}
+			
+			printf("Bouton CHARGE enfoncé. Démarrage de la charge...\n");
+			
+			/* Le générateur gère la charge complète */
+			Generateur_save_chargement_VH();
+			
+			/* Récupération de la voiture */
+			Gnenerateur_save_recuperation_VH();
+			
+			printf("Veuillez retirer votre carte.\n");
+			lecteurcarte_attendre_retrait();
+		} else {
+			/* Mode gestion : carte reconnue dans la base */
+			printf("Mode gestion base client actif. Carte reconnue.\n");
+			printf("Veuillez retirer votre carte.\n");
+			lecteurcarte_attendre_retrait();
+		}
+	} else {
+		if (current_mode == 1) {
+			/* Mode gestion : enregistrer le nouveau client */
+			baseclient_interactive_enregistrer(numero);
+		} else {
+			/* Mode charge : refuser l'accès */
+			voyant_setdisponible(ROUGE);
+			printf("Accès refusé. Veuillez contacter le support.\n");
+			printf("Veuillez retirer votre carte.\n");
+			lecteurcarte_attendre_retrait();
+		}
+	}
 }
 
