@@ -71,8 +71,8 @@ void lecteurcarte_lire_carte()
 			printf("Veuillez retirer votre carte avant d'appuyer sur le bouton CHARGE.\n");
 			lecteurcarte_attendre_retrait();
 			
-			/* Éteindre voyant disponible et attendre le bouton CHARGE */
-			voyant_setdisponible(OFF);
+			/* Allumer voyant disponible en vert et attendre le bouton CHARGE */
+			voyant_setdisponible(VERT);
 			printf("En attente du bouton CHARGE...\n");
 			
 			/* Boucle d'attente : lire l'état du bouton CHARGE */
