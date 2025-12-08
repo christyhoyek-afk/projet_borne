@@ -45,12 +45,13 @@ void lecteurcarte_lire_carte()
         // printf("%d", auth);
         if (auth) {
             if (current_mode == 2) {
-                for(int i=0; i<8; i++){
-                    voyant_setcharge(VERT);
-                    sleep(5); /* simuler */
-                    printf("Accès autorisé. Chargement en cours...\n");
-                    voyant_setcharge(OFF);
-                    sleep(5); /* simuler */
+                for(int i=0; i<8; i++)
+                    voyant_setcharge(ON);
+                printf("Accès autorisé. Chargement en cours...\n");
+                sleep(1); /* simuler */
+                voyant_setcharge(OFF);
+                voyant_setdisponible(OFF);
+                printf("Veuillez retirer votre carte.\n");
                       
                 }
                 

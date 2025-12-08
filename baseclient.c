@@ -4,6 +4,11 @@
 #include<ctype.h>
 #include"baseclient.h"
 
+static void baseclient_demander_retrait(void)
+{
+	printf("Veuillez retirer votre carte.\n");
+}
+
 /* Recherche si une carte existe dans la base.
    Le fichier stocke des lignes au format : <numero> <nom> <prenom>\n
    Retourne 1 si trouvée, 0 sinon. */
@@ -79,14 +84,17 @@ int baseclient_interactive_enregistrer(int numcarte)
 
 	if (strlen(nom) == 0 && strlen(prenom) == 0) {
 		printf("Nom et prenom vides — annulation.\n");
+		baseclient_demander_retrait();
 		return 0;
 	}
 
 	if (baseclient_enregistrer(numcarte, nom, prenom)) {
 		printf("Client enregistre : %d %s %s\n", numcarte, nom, prenom);
+		baseclient_demander_retrait();
 		return 1;
 	} else {
 		printf("Echec enregistrement (deja present ou erreur).\n");
+		baseclient_demander_retrait();
 		return 0;
 	}
 }
@@ -171,13 +179,16 @@ int baseclient_interactive_supprimer(int numcarte)
 	if (resp[0] == 'o' || resp[0] == 'O' || resp[0] == 'y' || resp[0] == 'Y') {
 		if (baseclient_supprimer(numcarte)) {
 			printf("Carte %d supprimee.\n", numcarte);
+			baseclient_demander_retrait();
 			return 1;
 		} else {
 			printf("Carte %d introuvable ou erreur.\n", numcarte);
+			baseclient_demander_retrait();
 			return 0;
 		}
 	}
 	printf("Annule.\n");
+	baseclient_demander_retrait();
 	return 0;
 }
 
@@ -199,9 +210,11 @@ int baseclient_interactive_modifier(int numcarte)
 
 	if (baseclient_modifier(numcarte, nom, prenom)) {
 		printf("Carte %d modifiee en: %s %s\n", numcarte, nom, prenom);
+		baseclient_demander_retrait();
 		return 1;
 	} else {
 		printf("Carte %d introuvable ou erreur.\n", numcarte);
+		baseclient_demander_retrait();
 		return 0;
 	}
 }
