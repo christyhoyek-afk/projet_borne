@@ -1,3 +1,15 @@
+/**
+ * @file Generateur_save.c
+ * @brief Gestion du générateur de tension et du processus de charge
+ * 
+ * Ce module gère le chargement des véhicules électriques en contrôlant
+ * les tensions (DC, AC), le contacteur AC, et en implémentant une machine
+ * à états pour le processus de charge complet.
+ * 
+ * @author Christian HOYEK et Julian DUBOSCLARD
+ * @date 2026
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <memoire_borne.h>
@@ -7,10 +19,21 @@
 #include "Generateur_save.h"
 #include "prise.h"
 
+/** @brief Pointeur vers la mémoire partagée des entrées/sorties */
 entrees * iog = NULL;
+/** @brief Identifiant de la mémoire partagée */
 int shmidg ;
+/** @brief Flag indiquant si la prise est branchée (1) ou non (0) */
 int etat_prise =0;/*flag mit a 1 si la prise est branchee sinon 0*/
 
+/**
+ * @brief Initialise le générateur et l'accès à la mémoire partagée
+ * 
+ * Initialise la prise, accède à la mémoire partagée et réinitialise
+ * le bouton d'arrêt à 0.
+ * 
+ * @return void
+ */
 void Generateur_save_initialisation(void)
 {
 	Prise_initialisation();
@@ -24,7 +47,18 @@ void Generateur_save_initialisation(void)
 
 }
 
-/* charger la batterie */
+/**
+ * @brief Gère le processus complet de chargement du véhicule
+ * 
+ * Implémente une machine à états pour gérer le chargement :
+ * - État 1 : Attente de branchement de la prise
+ * - État 2 : Prise branchée, S2 non fermé
+ * - État 3 : Attente de fermeture de S2
+ * - État 4 : Chargement de la batterie
+ * - État 5 : Fin de chargement ou arrêt
+ * 
+ * @return void
+ */
 void Generateur_save_chargement_VH(void)
 {
 	int etat_S2 = 1;/*flag mit a 0 si S2 ferme sinon 1*/
@@ -88,7 +122,14 @@ void Generateur_save_chargement_VH(void)
 		printf("fin de chargement \n\n");
 }
 
-/*recuperation de la voiture */
+/**
+ * @brief Gère la récupération du véhicule après la charge
+ * 
+ * Déverrouille la trappe et attend que la prise soit débranchée,
+ * puis verrouille la trappe et éteint les voyants.
+ * 
+ * @return void
+ */
 void Gnenerateur_save_recuperation_VH(void)
 {
 		Prise_deverouiller_trape();
@@ -107,20 +148,41 @@ void Gnenerateur_save_recuperation_VH(void)
 	
 }
 
-/* generer les differentes tensions*/
+/**
+ * @brief Génère une tension spécifique
+ * 
+ * Configure le générateur pour produire la tension demandée
+ * (DC, AC_1K, AC_CL, STOP).
+ * 
+ * @param tension Type de tension à générer (type pwm)
+ * @return void
+ */
 void Generateur_save_Gentension(pwm tension)
 {
 	iog->gene_pwm = tension;
 
 }
 
-/* la mesure de la tension */
+/**
+ * @brief Mesure la tension actuelle du générateur
+ * 
+ * Lit et retourne la valeur de tension mesurée par le générateur.
+ * 
+ * @return Valeur de la tension mesurée en unités arbitraires
+ */
 int Generateur_save_Valtension(void)
 {
 	return iog->gene_u ;
 }
 
-/* Contacteur AC ouvert/ferme ,0 On 1 off*/
+/**
+ * @brief Contrôle l'état du contacteur AC
+ * 
+ * Ouvre ou ferme le contacteur AC.
+ * 
+ * @param etat État du contacteur (0 = ouvert/On, 1 = fermé/off)
+ * @return void
+ */
 void Generateur_save_ACEtat(int etat)
 {	
 	iog->contacteur_AC = etat;

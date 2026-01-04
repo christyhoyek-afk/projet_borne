@@ -1,3 +1,15 @@
+/**
+ * @file lecteurcarte.c
+ * @brief Gestion du lecteur de carte et des processus d'authentification
+ * 
+ * Ce module gère la lecture des cartes, l'authentification des clients,
+ * et orchestre le processus complet de charge et de récupération du véhicule.
+ * Il coordonne les voyants, les boutons et le générateur.
+ * 
+ * @author Christian HOYEK et Julian DUBOSCLARD
+ * @date 2026
+ */
+
 #include <unistd.h>
 #include "lecteurcarte.h"
 #include <stdio.h>
@@ -11,11 +23,19 @@
 #include "Generateur_save.h"
 #include "bouton.h"
 
-/* module-level flag indicating whether voyants were initialized */
+/** @brief Flag indiquant si les voyants ont été initialisés avec succès */
 static int voyants_ok = 0;
-/* Instance globale du bouton */
+/** @brief Instance globale du bouton de charge */
 static Bouton bouton_charge;
 
+/**
+ * @brief Initialise le lecteur de carte et tous les composants associés
+ * 
+ * Initialise les ports, les voyants et le bouton de charge.
+ * Enregistre le statut de l'initialisation des voyants.
+ * 
+ * @return void
+ */
 void lecteurcarte_initialiser()
 {
 	initialisations_ports();
@@ -26,7 +46,14 @@ void lecteurcarte_initialiser()
 	boutonsInitialise(&bouton_charge);
 }
 
-/* Attend l'insertion et retourne le numero lu (ou <= 0 en erreur) */
+/**
+ * @brief Attend l'insertion d'une carte et retourne son numéro
+ * 
+ * Bloque jusqu'à ce qu'une carte soit insérée, puis lit et retourne
+ * le numéro de la carte.
+ * 
+ * @return Le numéro de carte lu (ou <= 0 en cas d'erreur)
+ */
 int lecteurcarte_obtenir_numero(void)
 {
 	attente_insertion_carte();
@@ -34,6 +61,14 @@ int lecteurcarte_obtenir_numero(void)
 	return numero;
 }
 
+/**
+ * @brief Attend que l'utilisateur retire sa carte
+ * 
+ * Affiche un message demandant le retrait, attend que la carte
+ * soit retirée, puis confirme le retrait.
+ * 
+ * @return void
+ */
 void lecteurcarte_attendre_retrait(void)
 {
 	printf("Veuillez retirer votre carte.\n");
@@ -42,6 +77,17 @@ void lecteurcarte_attendre_retrait(void)
 	printf("Carte retirée.\n");
 }
 
+/**
+ * @brief Fonction principale de lecture de carte et gestion du processus
+ * 
+ * Cette fonction orchestre tout le processus :
+ * - Lecture de la carte
+ * - Authentification du client
+ * - En mode charge : gestion du clignotement, attente du bouton, chargement et récupération
+ * - En mode gestion : gestion de l'enregistrement des nouveaux clients
+ * 
+ * @return void
+ */
 void lecteurcarte_lire_carte()
 {
 	attente_insertion_carte();

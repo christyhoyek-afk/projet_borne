@@ -1,3 +1,16 @@
+/**
+ * @file borne.c
+ * @brief Programme principal de la borne de recharge
+ * 
+ * Ce module contient le point d'entrée principal du système de borne de recharge.
+ * Il gère deux modes de fonctionnement :
+ * - Mode 1 : Gestion de la base de données clients (ajout, suppression, modification)
+ * - Mode 2 : Mode charge (lecture de carte et recharge)
+ * 
+ * @author Christian HOYEK et Julian DUBOSCLARD
+ * @date 2026
+ */
+
 #include <stdio.h>
 #include <memoire_borne.h>
 #include <donnees_borne.h>
@@ -11,8 +24,20 @@
 #include "mode.h"
 #include <stdlib.h>
 
+/** @brief Mode de fonctionnement actuel de la borne (1=gestion, 2=charge) */
 int current_mode = 2; /* default: charge mode */
 
+/**
+ * @brief Point d'entrée principal de l'application borne
+ * 
+ * Initialise tous les composants de la borne (lecteur de carte, générateur, prise)
+ * puis entre dans une boucle infinie qui :
+ * - Affiche le menu principal permettant de choisir entre mode gestion et mode charge
+ * - En mode charge (2) : lit la carte et procède à la recharge si le client existe
+ * - En mode gestion (1) : affiche un sous-menu pour ajouter, supprimer ou modifier des clients
+ * 
+ * @return 0 en cas de sortie normale (jamais atteint dans la boucle infinie)
+ */
 int main()
 {
 	/* Initialisation des composants */

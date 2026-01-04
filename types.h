@@ -1,5 +1,16 @@
-/* Minimal shim: include the canonical shared header for 'led'.
-   This file exists only for compatibility; prefer <donnees_borne.h>. */
+/**
+ * @file types.h
+ * @brief Fichier de compatibilité pour les types
+ * 
+ * Ce fichier existe uniquement pour des raisons de compatibilité.
+ * Il inclut l'en-tête canonical partagé pour le type 'led'.
+ * Il est préférable d'utiliser directement <donnees_borne.h>.
+ * 
+ * @deprecated Utiliser <donnees_borne.h> directement
+ * @author Christian HOYEK et Julian DUBOSCLARD
+ * @date 2026
+ */
+
 #ifndef TYPES_H
 #define TYPES_H
 

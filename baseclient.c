@@ -1,9 +1,29 @@
+/**
+ * @file baseclient.c
+ * @brief Gestion de la base de données des clients
+ * 
+ * Ce module gère l'authentification, l'enregistrement, la modification
+ * et la suppression des clients dans un fichier texte.
+ * Le format du fichier est: <numero_carte> <nom> <prenom>
+ * 
+ * @author Christian HOYEK et Julian DUBOSCLARD
+ * @date 2026
+ */
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
 #include"baseclient.h"
 
+/**
+ * @brief Demande à l'utilisateur de retirer sa carte
+ * 
+ * Affiche un message demandant le retrait de la carte,
+ * attend que la carte soit retirée, puis confirme le retrait.
+ * 
+ * @return void
+ */
 static void baseclient_demander_retrait(void)
 {
 	printf("Veuillez retirer votre carte.\n");
@@ -11,9 +31,15 @@ static void baseclient_demander_retrait(void)
 	printf("Carte retirée.\n");
 }
 
-/* Recherche si une carte existe dans la base.
-   Le fichier stocke des lignes au format : <numero> <nom> <prenom>\n
-   Retourne 1 si trouvée, 0 sinon. */
+/**
+ * @brief Authentifie un client en recherchant son numéro de carte
+ * 
+ * Recherche si une carte existe dans la base de données.
+ * Le fichier stocke des lignes au format : <numero> <nom> <prenom>\n
+ * 
+ * @param numcarte Le numéro de carte à rechercher
+ * @return 1 si la carte est trouvée, 0 sinon
+ */
 int baseclient_authentifier(int numcarte)
 {
 	int numero;
@@ -37,7 +63,17 @@ int baseclient_authentifier(int numcarte)
 	return 0;
 }
 
-/* Enregistre un nouveau client dans la base. Retourne 1 si succes, 0 sinon. */
+/**
+ * @brief Enregistre un nouveau client dans la base de données
+ * 
+ * Ajoute un nouveau client dans le fichier baseclient.txt.
+ * Vérifie qu'il n'existe pas déjà avant l'ajout.
+ * 
+ * @param numcarte Le numéro de carte du client
+ * @param nom Le nom du client (peut être NULL)
+ * @param prenom Le prénom du client (peut être NULL)
+ * @return 1 en cas de succès, 0 si le client existe déjà ou en cas d'erreur
+ */
 int baseclient_enregistrer(int numcarte, const char *nom, const char *prenom)
 {
 	if (!nom) nom = "";
@@ -61,8 +97,16 @@ int baseclient_enregistrer(int numcarte, const char *nom, const char *prenom)
 	return 1;
 }
 
-/* Fonction interactive : demande nom/prenom à l'utilisateur et enregistre.
-   Retourne 1 si enregistrement effectué, 0 sinon. */
+/**
+ * @brief Enregistre un nouveau client de manière interactive
+ * 
+ * Demande le nom et le prénom à l'utilisateur via stdin,
+ * puis enregistre le client dans la base.
+ * Gère les cas d'erreur et demande le retrait de la carte.
+ * 
+ * @param numcarte Le numéro de carte du client à enregistrer
+ * @return 1 si l'enregistrement est effectué, 0 sinon
+ */
 int baseclient_interactive_enregistrer(int numcarte)
 {
 	/* Vérifier si la carte existe déjà */
@@ -102,7 +146,15 @@ int baseclient_interactive_enregistrer(int numcarte)
 	}
 }
 
-/* Supprimer un client par numero. Retourne 1 si supprime, 0 si non trouve ou erreur. */
+/**
+ * @brief Supprime un client de la base de données
+ * 
+ * Recherche et supprime le client correspondant au numéro de carte.
+ * Utilise un fichier temporaire pour la réécriture.
+ * 
+ * @param numcarte Le numéro de carte du client à supprimer
+ * @return 1 si le client est supprimé, 0 s'il n'est pas trouvé ou en cas d'erreur
+ */
 int baseclient_supprimer(int numcarte)
 {
 	FILE *in = fopen("baseclient.txt", "r");
@@ -139,7 +191,17 @@ int baseclient_supprimer(int numcarte)
 	}
 }
 
-/* Modifier un client existant. Retourne 1 si modif, 0 sinon. */
+/**
+ * @brief Modifie les informations d'un client existant
+ * 
+ * Recherche le client par son numéro de carte et met à jour
+ * son nom et prénom. Utilise un fichier temporaire pour la modification.
+ * 
+ * @param numcarte Le numéro de carte du client à modifier
+ * @param nom Le nouveau nom du client
+ * @param prenom Le nouveau prénom du client
+ * @return 1 si la modification est effectuée, 0 si le client n'est pas trouvé ou en cas d'erreur
+ */
 int baseclient_modifier(int numcarte, const char *nom, const char *prenom)
 {
 	FILE *in = fopen("baseclient.txt", "r");
@@ -173,7 +235,15 @@ int baseclient_modifier(int numcarte, const char *nom, const char *prenom)
 	}
 }
 
-/* Wrapper interactif pour suppression */
+/**
+ * @brief Supprime un client de manière interactive
+ * 
+ * Demande confirmation à l'utilisateur avant de supprimer
+ * le client de la base de données.
+ * 
+ * @param numcarte Le numéro de carte du client à supprimer
+ * @return 1 si la suppression est effectuée, 0 sinon
+ */
 int baseclient_interactive_supprimer(int numcarte)
 {
 	char resp[16];
@@ -195,7 +265,15 @@ int baseclient_interactive_supprimer(int numcarte)
 	return 0;
 }
 
-/* Wrapper interactif pour modification */
+/**
+ * @brief Modifie un client de manière interactive
+ * 
+ * Demande le nouveau nom et prénom à l'utilisateur via stdin,
+ * puis modifie les informations du client dans la base.
+ * 
+ * @param numcarte Le numéro de carte du client à modifier
+ * @return 1 si la modification est effectuée, 0 si le client n'est pas trouvé ou en cas d'erreur
+ */
 int baseclient_interactive_modifier(int numcarte)
 {
 	char nom[128] = {0};
