@@ -42,5 +42,12 @@ clean:
 veryclean: clean
 	rm -f $(TARGET) a.out *.*~
 
+# Cible pour générer la documentation
+docs:
+	@echo "Génération de la documentation..."
+	@bash generate_docs.sh
+
+.PHONY: docs
+
 include Makefile.dep
 
