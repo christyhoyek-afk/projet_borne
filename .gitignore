@@ -2,7 +2,6 @@
 docs/html/
 docs/latex/
 docs/*.pdf
-!docs/Documentation_Projet_Borne.pdf
 
 # Object files
 *.o
